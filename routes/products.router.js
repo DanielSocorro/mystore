@@ -23,16 +23,22 @@ router.get('/filter', (req, res) => {  ///  specific routes MUST COME BEFORE glo
 
 router.get('/:id', (req, res) => {   ///  global routs MUST COME AFTER specifics
   const { id } = req.params;
-  res.json({
+if (id  === '999') {
+  res.status(404).json({
+    message: 'Not Found'
+  });
+} else {
+  res.status(200).json({
     id,
     name: 'Product 2',
     price: 2000
   });
+}
 });
 
 router.post('/', (req, res) => {
   const body = req.body;
-  res.json({
+  res.status(201).json({
     message: 'created',
     data: body
   });
