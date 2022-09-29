@@ -1,6 +1,8 @@
 const express = require('express');
 
 const ProductsService = require('./../services/product.service');
+const validatorHandler = require('./../middlewares/validator.handler');
+const {createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema');
 
 const router = express.Router();
 const service = new ProductsService();
@@ -14,27 +16,34 @@ router.get('/filter', (req, res) => {  ///  specific routes MUST COME BEFORE glo
   res.send('Im a filter');
 });
 
-router.get('/:id', async (req, res, next) => {   ///  global routs MUST COME AFTER specifics
+router.get('/:id',
+ validatorHandler(getProductSchema, 'params'),
+async (req, res, next) => {            ///  global routs MUST COME AFTER specifics
   try {
     const { id } = req.params;
-    const product =  await service.findOne(id);
+    const product = await service.findOne(id);
     res.json(product);
   } catch (error) {
     next(error);
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/',
+validatorHandler(createProductSchema, 'body'),
+async (req, res, next) => {
   try {
     const body = req.body;
-  const newProduct = await service.create(body);
-  res.status(201).json(newProduct);
+    const newProduct = await service.create(body);
+    res.status(201).json(newProduct);
   } catch (error) {
     next(error);
   }
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id',
+validatorHandler(getProductSchema, 'params'),
+validatorHandler(updateProductSchema, 'body'),
+ async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -45,7 +54,8 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',
+async (req, res) => {
   const { id } = req.params;
   const rta = await service.delete(id)
   res.json(rta);
