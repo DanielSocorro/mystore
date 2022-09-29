@@ -1,4 +1,3 @@
-const { response } = require('express');
 const express = require('express');
 
 const ProductsService = require('./../services/product.service');
@@ -12,19 +11,27 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/filter', (req, res) => {  ///  specific routes MUST COME BEFORE global
-  res.send('Yo soy un filter');
+  res.send('Im a filter');
 });
 
-router.get('/:id', async (req, res) => {   ///  global routs MUST COME AFTER specifics
-  const { id } = req.params;
-  const product =  await service.findOne(id);
-  res.json(product);
+router.get('/:id', async (req, res, next) => {   ///  global routs MUST COME AFTER specifics
+  try {
+    const { id } = req.params;
+    const product =  await service.findOne(id);
+    res.json(product);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post('/', async (req, res) => {
-  const body = req.body;
+router.post('/', async (req, res, next) => {
+  try {
+    const body = req.body;
   const newProduct = await service.create(body);
   res.status(201).json(newProduct);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.patch('/:id', async (req, res) => {

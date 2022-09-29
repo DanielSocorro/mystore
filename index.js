@@ -1,6 +1,8 @@
 const express = require('express');
 const routerApi = require('./routes');
 
+const { logErrors, errorHandler } = require('./middlewares/error.handler');
+
 const app = express();
 const port = 3000;
 
@@ -16,29 +18,9 @@ app.get('/new-path', (req, res) => {
 
 routerApi(app);
 
+app.use(logErrors);
+app.use(errorHandler);
+
 app.listen(port, () => {
-  console.log('my port ' + port);
+  console.log('my best port ' + port);
 });
-
-
-
-/* app.get('/users',  (req, res)  => {
-  const { limit, offset } = req.query;
-  if(limit && offset) {
-    res.json({
-      limit,
-      offset
-    });
-  } else {
-    res.send('There is not params');
-  }
-});
-
-app.get('/categories/:categoryId/products/:productId', (req, res)=> {
-  const { categoryId, productId } = req.params;
-  res.json({
-    categoryId,
-    productId
-  });
-}) */
-

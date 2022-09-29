@@ -8,7 +8,7 @@ class ProductsService {
   }
 
     generate() {
-      const limit = 10;
+      const limit = 100;
       for (let index = 0; index < limit; index++) {
         this.products.push({
           id: faker.datatype.uuid(),
@@ -39,6 +39,7 @@ class ProductsService {
     }
 
     async findOne(id) {
+      const name = this.getTotal();
       return this.products.find(item => item.id === id);
     }
 
